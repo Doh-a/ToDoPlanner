@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+  <title>ToDo Planner</title>
+  <style type="text/css">
+    .column {
+      cursor: move;
+    }
+
+    .column.over {
+      border-top: 2px solid blue;
+    }
+
+    [draggable] {
+      -moz-user-select: none;
+      -khtml-user-select: none;
+      -webkit-user-select: none;
+      user-select: none;
+      /* Required to make elements draggable in old WebKit */
+      -khtml-user-drag: element;
+      -webkit-user-drag: element;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="collapse bg-dark" id="navbarHeader">
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-8 col-md-7 py-4">
+            <h4 class="text-white">About</h4>
+            <p class="text-muted">Dark ride a day does just post one video of one dark ride per day on
+              <a href="https://twitter.com/esainton">esainton</a> profile on twitter. This page displays stats about this posts.</p>
+          </div>
+          <div class="col-sm-4 offset-md-1 py-4">
+            <h4 class="text-white">Contact</h4>
+            <ul class="list-unstyled">
+              <li>
+                <a href="https://twitter.com/esainton" class="text-white">Follow on Twitter</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="navbar navbar-dark bg-dark box-shadow">
+      <div class="container d-flex justify-content-between">
+        <a href="#" class="navbar-brand d-flex align-items-center">
+          <strong>ToDo Planner</strong>
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader"
+          aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <body>
+    <div class="container-fluid">
+      <br />
+
+      <div class="collapse" id="calendar">
+        <h1 id="MonthName"></h1>
+        <table class="table" id="calendarTable">
+          <thead>
+            <tr>
+              <th scope="col">Monday</th>
+              <th scope="col">Tuesday</th>
+              <th scope="col">Wednesday</th>
+              <th scope="col">Thursday</th>
+              <th scope="col">Friday</th>
+              <th scope="col">Saturday</th>
+              <th scope="col">Sunday</th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+
+      <div class="row">
+        <div class="col-2" id="dayToDoList">
+          <div class="card border-dark mb-3">
+            <div class="card-header">
+              <h5>Today</h5>
+            </div>
+            <div class="card-body">
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item">Cras justo odio</li>
+                <li class="list-group-item">Dapibus ac facilisis in</li>
+                <li class="list-group-item">Vestibulum at eros</li>
+              </ul>
+            </div>
+            <div class="card-footer bg-transparent">
+              <p class="card-text">
+                <small class="text-muted">Last updated 3 mins ago</small>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="card-columns" id="projectsList">
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- javascript -->
+    <script type="text/javascript" src="node_modules/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="node_modules/chart.js/dist/Chart.js"></script>
+    <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+
+    <script type="text/javascript"> 
+      $(document).ready(function(){
+        var selectedYear = 2018;
+        var selectedMonth = 7;
+
+        var date = new Date();
+        var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        $("#MonthName").append(months[selectedMonth]);
+        var numberOfDays = new Date(selectedYear, selectedMonth + 1, 0).getDate();
+        var numberOfDaysPreviousMonth = new Date(selectedYear, selectedMonth, 0).getDate();
+
+        // Initial days : 
+        $("#calendarTable").append("<tr>");
+        var firstDay = new Date(selectedYear, selectedMonth, 0).getDay();
+        for (i = 0; i < firstDay; i++) {
+          $("#calendarTable").append("<td style=\"color:#CCCCCC\">" + new Date(selectedYear, selectedMonth - 1, numberOfDaysPreviousMonth - firstDay + i + 1).getDate() + "</td>");
+        }
+
+        for (i = 0; i < numberOfDays; i++) {
+          if (i != 0 && new Date(selectedYear, selectedMonth, i + 1).getDay() == 1) {
+            $("#calendarTable").append("</tr><tr>");
+          }
+
+          $("#calendarTable").append("<td><h5 class=\"card-title\">" + new Date(selectedYear, selectedMonth, i + 1).getDate() + "</h5><ul><li>Task 1</li><li>Task 2</li></ul></td>");
+        }
+
+        $("#calendarTable").append("</tr>");
+
+        // SHow or hide calendar when user press enter
+        $(document).keypress(function (e) {
+          if($("#AddTaskName").is(":focus")) return;
+
+          if (e.which == 99) {
+            $('#calendar').collapse("toggle");
+          }
+        });
+
+        // Show the new task input
+        $(document).on("click", "a.addTasksLink" , function() {
+          $('#divAddTaskForm').remove();
+          $(this).parent().append('<div id="divAddTaskForm"><input type="text" id="AddTaskName" name="AddTaskName" placeholder="Name of the task" /><input type="button" id="AddTaskButton" value="Add"/></div>');
+        });
+      });
+    </script>
+
+    <script type="text/javascript" src="dist/projectsListAndTasks.js"></script>    
+  </body>
+
+</html>

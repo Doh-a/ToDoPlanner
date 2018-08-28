@@ -98,10 +98,25 @@ app.post('/addTask', function (req, res) {
         return res.status(400).send({ error:true, message: 'Please provide task' });
     }
 
-    var params = [task.name , task.project, task.duration];
+    var newPos = 0;
 
-    var result = database.query("INSERT INTO tasks (`name`, `project`, `duration`) VALUES (?, ?, ?)", params).then(rows => {
-        return res.send({ error: false, data: rows, message: 'New task has been created successfully.' });
+    var newPosSQLResult = database.query("SELECT pos FROM `tasks` WHERE project = ? ORDER BY pos DESC LIMIT 1", task.project).then(posRows => { 
+        var newPos = 0;
+        
+        if(posRows[0] != undefined) 
+            newPos = posRows[0].pos;
+
+        var params = [task.name , task.project, task.duration, newPos];
+        var result = database.query("INSERT INTO tasks (`name`, `project`, `duration`, `pos`) VALUES (?, ?, ?, ?)", params).then(rows => {
+            return res.send({ error: false, data: rows, message: 'New task has been created successfully.' });
+        })
+        .catch(err => {
+            if(err != null)
+            {
+                console.log(err);
+                res.send({ error:true, data: err, message:'No task added, check errors'});
+            }
+        });
     })
     .catch(err => {
         if(err != null)

@@ -70,6 +70,31 @@ app.get('/listProjectsAndTasks', function (req, res) {
     })
 })
 
+app.get('/listTasksOfMonth/:selectedMonth/:selectedYear', function (req, res) {   
+    var tasksDays = []; 
+    database.query('SELECT * FROM `tasks`, `taskdate` WHERE MONTH(date) = ? AND YEAR(date) = ? AND tasks.taskId = taskdate.task ORDER BY date ASC ', [req.params.selectedMonth, req.params.selectedYear]).then(rows => {
+        res.send({ error:false, data: rows, message:'List of tasks for the month of ' + req.params.selectedMonth + ' in ' + req.params.selectedYear});
+    })
+    .catch(err => {
+        console.log(err);
+        res.send({ error:true, data: err, message:'No task found, check errors'});
+    });
+})
+
+app.get('/addTaskToDay/:taskId/:day/:month/:year', function (req, res) {   
+        var params = [req.params.taskId , req.params.year + '-' + req.params.month + '-' + req.params.day];
+        var result = database.query("INSERT INTO `taskdate` (`task`, `date`, `duration`, `finished`) VALUES (?, ?, '1', '0');", params).then(rows => {
+            return res.send({ error: false, data: rows, message: 'New task has been inserted in the planning.' });
+        })
+        .catch(err => {
+            if(err != null)
+            {
+                console.log(err);
+                res.send({ error:true, data: err, message:'No task added, check errors'});
+            }
+        });
+})
+
 app.get('/validateTask/:taskId', function (req, res) {   
     database.query('UPDATE tasks SET finished = 1 WHERE taskId = ' + req.params.taskId).then(rows => {
         res.send({ error:false, data: req.params.taskId, message:'Task finished.'});

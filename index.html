@@ -71,13 +71,13 @@
         <table class="table" id="calendarTable">
           <thead>
             <tr>
-              <th scope="col">Monday</th>
-              <th scope="col">Tuesday</th>
-              <th scope="col">Wednesday</th>
-              <th scope="col">Thursday</th>
-              <th scope="col">Friday</th>
-              <th scope="col">Saturday</th>
-              <th scope="col">Sunday</th>
+              <th scope="col" style="width:14%">Monday</th>
+              <th scope="col" style="width:14%">Tuesday</th>
+              <th scope="col" style="width:14%">Wednesday</th>
+              <th scope="col" style="width:14%">Thursday</th>
+              <th scope="col" style="width:14%">Friday</th>
+              <th scope="col" style="width:14%">Saturday</th>
+              <th scope="col" style="width:14%">Sunday</th>
             </tr>
           </thead>
         </table>
@@ -118,10 +118,10 @@
     <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
 
     <script type="text/javascript"> 
-      $(document).ready(function(){
-        var selectedYear = 2018;
-        var selectedMonth = 7;
+      var selectedYear = 2018;
+      var selectedMonth = 7;
 
+      $(document).ready(function(){
         var date = new Date();
         var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
         var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -140,8 +140,8 @@
           if (i != 0 && new Date(selectedYear, selectedMonth, i + 1).getDay() == 1) {
             $("#calendarTable").append("</tr><tr>");
           }
-
-          $("#calendarTable").append("<td><h5 class=\"card-title\">" + new Date(selectedYear, selectedMonth, i + 1).getDate() + "</h5><ul><li>Task 1</li><li>Task 2</li></ul></td>");
+          var todayColor = (new Date(selectedYear, selectedMonth, i + 1).getDate() == new Date().getDate() && new Date(selectedYear, selectedMonth, i + 1).getMonth() == new Date().getMonth() && new Date(selectedYear, selectedMonth, i + 1).getYear() == new Date().getYear()) ? 'EEE' : 'FFF';        
+          $("#calendarTable").append("<td style=\"background-color : #" + todayColor + ";\"><h5 class=\"card-title\">" + new Date(selectedYear, selectedMonth, i + 1).getDate() + "</h5><ul id=\"day_" + (i+1) + "\" class=\"tasksListDays\" style=\"border : 1px solid #EEE; min-height:20px;\"></ul></td>");
         }
 
         $("#calendarTable").append("</tr>");

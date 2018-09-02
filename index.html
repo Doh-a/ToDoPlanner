@@ -118,9 +118,9 @@
     <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
 
     <script type="text/javascript"> 
-      var selectedYear = 2018;
-      var selectedMonth = 7;
-
+      var selectedYear = new Date().getYear() + 1900;
+      var selectedMonth = new Date().getMonth();
+      
       $(document).ready(function(){
         var date = new Date();
         var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -132,6 +132,7 @@
         // Initial days : 
         $("#calendarTable").append("<tr>");
         var firstDay = new Date(selectedYear, selectedMonth, 0).getDay();
+
         for (i = 0; i < firstDay; i++) {
           $("#calendarTable").append("<td style=\"color:#CCCCCC\">" + new Date(selectedYear, selectedMonth - 1, numberOfDaysPreviousMonth - firstDay + i + 1).getDate() + "</td>");
         }
